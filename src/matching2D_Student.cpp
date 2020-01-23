@@ -141,3 +141,52 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
         cv::waitKey(0);
     }
 }
+
+void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::string detectorType, bool bVis)
+{
+    // create generic detector pointer variable
+    cv::Ptr<cv::Feature2D> detector_ptr;
+
+    //assign the detector pointer the correct object
+    if (detectorType.compare("FAST") == 0)
+    {
+        detector_ptr = cv::FastFeatureDetector::create();
+    }
+    else if (detectorType.compare("BRISK") == 0)
+    {
+        detector_ptr = cv::BRISK::create();
+    }
+    else if (detectorType.compare("ORB") == 0)
+    {
+        detector_ptr = cv::ORB::create((img.rows* img.cols), 1.2f, 8, 31, 0, 2, cv::ORB::HARRIS_SCORE, 31, 20);
+
+    }
+    else if (detectorType.compare("AKAZE") == 0)
+    {
+        detector_ptr = cv::AKAZE::create();
+    }
+    else if (detectorType.compare("SIFT") == 0)
+    {
+        detector_ptr = cv::xfeatures2d::SIFT::create();
+    }
+    // else
+    // {
+    //     static_assert(false, "Wrong Value");
+    // }
+    double t = (double)cv::getTickCount();
+    detector_ptr->detect(img, keypoints);
+    t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+    cout << detectorType << " detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+
+    // visualize results
+    if (bVis)
+    {
+        cv::Mat visImage = img.clone();
+        cv::drawKeypoints(img, keypoints, visImage, cv::Scalar::all(-1), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+        string windowName = detectorType + " Detector Results";
+        cv::namedWindow(windowName, 6);
+        imshow(windowName, visImage);
+        cv::waitKey(0);
+    }
+}
+
