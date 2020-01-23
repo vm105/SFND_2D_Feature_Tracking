@@ -89,7 +89,7 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SIFT";
+        string detectorType = "AKAZE";
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
@@ -105,7 +105,7 @@ int main(int argc, const char *argv[])
         }
         else
         {
-            detKeypointsModern(keypoints, imgGray, detectorType, true);
+            detKeypointsModern(keypoints, imgGray, detectorType, false);
         }
         //// EOF STUDENT ASSIGNMENT
 
@@ -117,7 +117,9 @@ int main(int argc, const char *argv[])
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-            // ...
+            apply_box_filter(keypoints, 535, 180, 180, 150);
+            //draw a rectangle so it's easier to see
+            cv::rectangle(imgGray, cv::Point2f(535, 180), cv::Point2f(535 + 180, 180 + 180), 0, 2);
         }
 
         //// EOF STUDENT ASSIGNMENT
@@ -184,7 +186,7 @@ int main(int argc, const char *argv[])
             cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
             // visualize matches between current and previous image
-            bVis = false;
+            bVis = true;
             if (bVis)
             {
                 cv::Mat matchImg = (dataBuffer.at(get_index(imgIndex)).cameraImg).clone();

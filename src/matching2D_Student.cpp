@@ -189,4 +189,17 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         cv::waitKey(0);
     }
 }
+void apply_box_filter(std::vector<cv::KeyPoint> &keypoints, int x, int y, int w, int h)
+{
+    std::vector<cv::KeyPoint> temp;
+    for (auto it = keypoints.begin(); it != keypoints.end(); ++it)
+    {
+        if (((*it).pt.x >= x) && ((*it).pt.x <= (x + w)) &&
+            ((*it).pt.y >= y) && ((*it).pt.y <= (y + h)))
+        {
+            temp.push_back(*it);
+        }
+    }
+    keypoints.swap(temp);
+}
 
