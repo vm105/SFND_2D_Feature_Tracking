@@ -3,6 +3,9 @@
 
 using namespace std;
 
+float avg_kp = 0.0f;
+float avg_kp_time = 0.0f;
+
 // Find best matches for keypoints in two camera images based on several matching methods
 void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::KeyPoint> &kPtsRef, cv::Mat &descSource, cv::Mat &descRef,
                       std::vector<cv::DMatch> &matches, std::string descriptorType, std::string matcherType, std::string selectorType)
@@ -125,6 +128,8 @@ void detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool b
     }
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     cout << "Shi-Tomasi detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+    avg_kp += keypoints.size();
+    avg_kp_time += (1000 * t / 1.0);
 
     // visualize results
     if (bVis)
@@ -166,6 +171,8 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     cout << "Harris detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
 
+    avg_kp += keypoints.size();
+    avg_kp_time += (1000 * t / 1.0);
     // visualize results
     if (bVis)
     {
@@ -210,7 +217,8 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     detector_ptr->detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     cout << detectorType << " detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
-
+    avg_kp += keypoints.size();
+    avg_kp_time += (1000 * t / 1.0);
     // visualize results
     if (bVis)
     {
@@ -233,5 +241,15 @@ void apply_box_filter(std::vector<cv::KeyPoint> &keypoints, cv::Rect& rectangle)
         }
     }
     keypoints.swap(temp);
+}
+
+float get_avg_kp()
+{
+    return avg_kp / 10;
+}
+
+float get_avg_kp_time()
+{
+    return avg_kp_time / 10;
 }
 
