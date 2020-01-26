@@ -117,8 +117,8 @@ int main(int argc, const char *argv[])
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-            apply_box_filter(keypoints, 535, 180, 180, 150);
-            //draw a rectangle so it's easier to see
+            apply_box_filter(keypoints, vehicleRect);
+            //draw a rectangle so it's easier to see keypoints and matches
             cv::rectangle(imgGray, cv::Point2f(535, 180), cv::Point2f(535 + 180, 180 + 180), 0, 2);
         }
 

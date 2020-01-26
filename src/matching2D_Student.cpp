@@ -205,10 +205,7 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     {
         detector_ptr = cv::xfeatures2d::SIFT::create();
     }
-    // else
-    // {
-    //     static_assert(false, "Wrong Value");
-    // }
+
     double t = (double)cv::getTickCount();
     detector_ptr->detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
@@ -225,13 +222,12 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         cv::waitKey(0);
     }
 }
-void apply_box_filter(std::vector<cv::KeyPoint> &keypoints, int x, int y, int w, int h)
+void apply_box_filter(std::vector<cv::KeyPoint> &keypoints, cv::Rect& rectangle)
 {
     std::vector<cv::KeyPoint> temp;
     for (auto it = keypoints.begin(); it != keypoints.end(); ++it)
     {
-        if (((*it).pt.x >= x) && ((*it).pt.x <= (x + w)) &&
-            ((*it).pt.y >= y) && ((*it).pt.y <= (y + h)))
+        if (rectangle.contains((*it).pt))
         {
             temp.push_back(*it);
         }
