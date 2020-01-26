@@ -10,28 +10,48 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     // configure matcher
     bool crossCheck = false;
     cv::Ptr<cv::DescriptorMatcher> matcher;
-
+    float knn_threshold = 0.8f;
+    double t;
     if (matcherType.compare("MAT_BF") == 0)
     {
-        int normType = cv::NORM_HAMMING;
+        int normType = descriptorType.compare("DES_BINARY") == 0 ? cv::NORM_HAMMING : cv::NORM_L2;
         matcher = cv::BFMatcher::create(normType, crossCheck);
     }
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
-        // ...
+        cv::Mat desc_src_temp, desc_ref_temp;
+        descSource.convertTo(desc_src_temp, CV_32F);
+        descRef.convertTo(desc_ref_temp, CV_32F);
+        descSource = desc_src_temp;
+        descRef = desc_ref_temp;
+        matcher = cv::FlannBasedMatcher::create();
     }
 
     // perform matching task
     if (selectorType.compare("SEL_NN") == 0)
     { // nearest neighbor (best match)
-
+        t = static_cast<double>(cv::getTickCount());
         matcher->match(descSource, descRef, matches); // Finds the best match for each descriptor in desc1
+        t = (static_cast<double>(cv::getTickCount()) - t)/ cv::getTickFrequency();
     }
+
     else if (selectorType.compare("SEL_KNN") == 0)
     { // k nearest neighbors (k=2)
 
-        // ...
+        std::vector<std::vector<cv::DMatch>> match_vector;
+        t = static_cast<double>(cv::getTickCount());
+        matcher->knnMatch(descSource, descRef, match_vector, 2);
+
+        for (auto it = match_vector.begin(); it != match_vector.end(); ++it)
+        {
+            if (((*it)[0].distance / (*it)[1].distance) < knn_threshold)
+            {
+                matches.push_back((*it)[0]);
+            }
+        }
+        t = (static_cast<double>(cv::getTickCount()) - t)/ cv::getTickFrequency();
     }
+    std::cout << matcherType << " with " << selectorType << " found " << matches.size() << " matches in " << 1000 * t / 1.0 << " ms" << std::endl;
 }
 
 // Use one of several types of state-of-art descriptors to uniquely identify keypoints
