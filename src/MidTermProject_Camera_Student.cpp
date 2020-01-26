@@ -89,7 +89,7 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SIFT";
+        string detectorType = "AKAZE";
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
@@ -150,7 +150,7 @@ int main(int argc, const char *argv[])
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRIEF, ORB, FREAK, AKAZE, SIFT, BRISK
+        string descriptorType = "BRISK";// BRIEF, ORB, FREAK, AKAZE, SIFT, BRISK
         descKeypoints(dataBuffer.at(get_index(imgIndex)).keypoints, dataBuffer.at(get_index(imgIndex)).cameraImg, descriptors, descriptorType);
         //// EOF STUDENT ASSIGNMENT
 
@@ -206,6 +206,9 @@ int main(int argc, const char *argv[])
         }
 
     } // eof loop over all images
+    std::cout << "-------------------------STATS -------------------------" << std::endl;
     std::cout << "average number of keypoints " <<  get_avg_kp() << " in " << get_avg_kp_time() << " ms" << std::endl;
+    std::cout << "average time for descriptor computation " << get_avg_desc_time() << " ms" << std::endl;
+    std::cout << "average number of matches " << get_avg_match() << " in " << get_avg_match_time() << " ms" << std::endl;
     return 0;
 }

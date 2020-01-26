@@ -28,5 +28,8 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 void apply_box_filter(std::vector<cv::KeyPoint> &keypoints, cv::Rect& rectangle);
 float get_avg_kp();
 float get_avg_kp_time();
+float get_avg_desc_time();
+float get_avg_match_time();
+float get_avg_match();
 
 #endif /* matching2D_hpp */
