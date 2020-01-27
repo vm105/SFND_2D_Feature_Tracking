@@ -20,7 +20,7 @@ The following is how the tasks of the projects were addressed:
 2. Implemented Flann and K-nearest neighbor selection.
 3. Implemented k-nearest neighbor with a threshold ratio of 0.8.
 
-### Performance: The performance analysis data can be accessed under /data
+### Performance:
 1. Collected data on keypoints.
 2. Collected data on all keypoint - descriptor combinations. 
 3. Identified the top 3 combinations (highlighting in green) and identified the SHITOMASHI - BRIEF combination as the best. 
